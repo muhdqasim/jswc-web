@@ -1,0 +1,13 @@
+th > div,td > div {
+    table-layout:fixed;
+    max-width:25px;
+    min-width:25px;
+    width: 25px;
+    height: 15px;
+    overflow:hidden;
+    word-wrap:break-word;
+}
+
+tr {
+    height: 20px;
+}

@@ -1,18 +1,35 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import Table from './components/Table'
 
 function App() {
   const [jsonData, setJsonData] = useState({})
   const jsonDataRef = useRef({})
   const [socket, setSocket] = useState()
 
+  function searchPropertyType(id, propertyType) {
+    const obj = jsonData[id]
+    if (obj && obj.children) {
+      const requestedChild = obj.children.find((singleChild) => {
+        if (singleChild.Properties.Type === propertyType) {
+          return singleChild
+        }
+      })
+      return requestedChild
+    }
+
+    return null
+  }
+
   const returnStyles = (Properties, position, backgroundColor) => {
     const formStyle = {
       position,
       top: `${Properties?.Posn[0]}px`,
       left: `${Properties?.Posn[1]}px`,
-      height: Properties?.Size[0],
-      width: Properties?.Size[1],
+      maxHeight: Properties?.Size[0],
+      maxWidth: Properties?.Size[1],
+      minHeight: Properties?.Size[0],
+      minWidth: Properties?.Size[1],
       backgroundColor,
     }
 
@@ -41,7 +58,6 @@ function App() {
             return singleChild
           }
         )
-        console.log({ updatedJsonData })
       } else {
         updatedJsonData.children.push(data)
       }
@@ -70,12 +86,14 @@ function App() {
 
     // WebSocket received a message
     socket.onmessage = (event) => {
-      console.log({ data: JSON.parse(event.data) })
+      console.log(event.data)
       // console.log('WebSocket message received:', event.data)
       if (event.data.includes('WC')) {
         handleSocketData(JSON.parse(event.data).WC)
+        console.log(JSON.parse(event.data).WC)
       } else {
         handleSocketData(JSON.parse(event.data).WS)
+        console.log(JSON.parse(event.data).WS)
       }
       setJsonData(() => jsonDataRef.current)
       // Handle the received data here
@@ -129,7 +147,6 @@ function App() {
                 },
               })
             )
-            console.log(event.target.value, index, Properties)
           }}
         >
           {Properties.Items.map((item, index) => (
@@ -160,34 +177,17 @@ function App() {
     } else if (Properties.Type === 'Grid') {
       const tableStyles = returnStyles(Properties, 'absolute', 'white')
 
-      function generateExcelColumnHeader(index) {
-        let header = ''
-        while (index >= 0) {
-          header = String.fromCharCode(65 + (index % 26)) + header
-          index = Math.floor(index / 26) - 1
-        }
-        return header
-      }
+      const result = searchPropertyType(singleChild.ID.split('.')[0], 'Edit')
 
       return (
-        <table style={tableStyles}>
-          <thead>
-            <tr>
-              {Properties.Values[0].map((_, index) => (
-                <th key={index}>{generateExcelColumnHeader(index)}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Properties.Values.map((data, index) => (
-              <tr key={index}>
-                {data.map((value, subIndex) => (
-                  <td key={subIndex}>{value}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ ...tableStyles, overflow: 'auto' }}>
+          <Table
+            x={parseInt(Properties.Values.length)}
+            y={parseInt(Properties.Values.length)}
+            id={singleChild.ID}
+            data={Properties.Values}
+          />
+        </div>
       )
     }
   }
