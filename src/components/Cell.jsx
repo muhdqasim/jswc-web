@@ -5,28 +5,35 @@ import React from 'react'
  * Cell represents the atomic element of a table
  */
 const Cell = ({ x, y, value }) => {
-  const determineDisplay = (value) => {
-    return value
-  }
-
-  let display = determineDisplay(value)
-
   const calculateCss = () => {
     const css = {
-      width: '80px',
+      width: '126px',
       padding: '4px',
       margin: '0',
-      height: '25px',
+      height: '20px',
       boxSizing: 'border-box',
       position: 'relative',
       display: 'inline-block',
       color: 'black',
-      border: '1px solid #cacaca',
+      border: '1px solid  rgba(0, 0, 0, 0.1)',
       textAlign: 'left',
       verticalAlign: 'top',
-      fontSize: '14px',
+      fontSize: '12px',
       lineHeight: '15px',
       overflow: 'hidden',
+    }
+    css.borderTop = '0px'
+    css.borderLeft = '0px'
+
+    if (x === 0 && y === 0) {
+      //  css.position = 'sticky'
+    }
+    if (x !== 0 && y !== 0) {
+      css.textAlign = 'right'
+    }
+
+    if (y === 0) {
+      css.textAlign = 'center'
     }
 
     return css
@@ -34,9 +41,31 @@ const Cell = ({ x, y, value }) => {
 
   const css = calculateCss()
 
+  // column 0
+  if (x === 0) {
+    return <span style={css}>{y === 0 ? '' : y}</span>
+  }
+
+  function generateExcelColumnHeader(index) {
+    let header = ''
+    while (index >= 0) {
+      header = String.fromCharCode(65 + (index % 26)) + header
+      index = Math.floor(index / 26) - 1
+    }
+    return header
+  }
+
+  if (y === 0) {
+    return (
+      <span style={css} role='presentation'>
+        {generateExcelColumnHeader(x - 1)}
+      </span>
+    )
+  }
+
   return (
     <span style={css} role='presentation'>
-      {display}
+      {value}
     </span>
   )
 }

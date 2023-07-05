@@ -7,20 +7,6 @@ function App() {
   const jsonDataRef = useRef({})
   const [socket, setSocket] = useState()
 
-  function searchPropertyType(id, propertyType) {
-    const obj = jsonData[id]
-    if (obj && obj.children) {
-      const requestedChild = obj.children.find((singleChild) => {
-        if (singleChild.Properties.Type === propertyType) {
-          return singleChild
-        }
-      })
-      return requestedChild
-    }
-
-    return null
-  }
-
   const returnStyles = (Properties, position, backgroundColor) => {
     const formStyle = {
       position,
@@ -177,15 +163,13 @@ function App() {
     } else if (Properties.Type === 'Grid') {
       const tableStyles = returnStyles(Properties, 'absolute', 'white')
 
-      const result = searchPropertyType(singleChild.ID.split('.')[0], 'Edit')
-
       return (
         <div style={{ ...tableStyles, overflow: 'auto' }}>
           <Table
             x={parseInt(Properties.Values.length)}
             y={parseInt(Properties.Values.length)}
             id={singleChild.ID}
-            data={Properties.Values}
+            data={[[], ...Properties.Values]}
           />
         </div>
       )
@@ -195,7 +179,7 @@ function App() {
   const renderParent = (parent) => {
     const { Properties } = parent
     if (Properties.Type === 'Form') {
-      const formStyles = returnStyles(Properties, 'relative', 'lightgrey')
+      const formStyles = returnStyles(Properties, 'relative', '#F0F0F0')
       return (
         <>
           <form style={formStyles}>

@@ -64,35 +64,15 @@ const Table = ({ x, y, data }) => {
     }
   })
 
-  const executeFormula = (cell, value) => {
-    parser.cell = cell
-    let res = parser.parse(value)
-    if (res.error != null) {
-      return res
-    }
-    if (res.result.toString() === '') {
-      return res
-    }
-    if (res.result.toString().slice(0, 1) === '=') {
-      res = executeFormula(cell, res.result.slice(1))
-    }
-
-    return res
-  }
-
   const rows = []
+
+  console.log(data, 'data')
 
   for (let rowIndex = 0; rowIndex < y + 1; rowIndex += 1) {
     const rowData = data[rowIndex] || {}
-    rows.push(
-      <Row
-        executeFormula={executeFormula}
-        key={rowIndex}
-        y={rowIndex}
-        x={x + 1}
-        rowData={rowData}
-      />
-    )
+
+    console.log({ y: rowIndex, x: x + 1, rowData })
+    rows.push(<Row key={rowIndex} y={rowIndex} x={x + 1} rowData={rowData} />)
   }
 
   return <div style={{ width: 'max-content' }}>{rows}</div>
