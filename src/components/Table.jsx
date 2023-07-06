@@ -1,5 +1,4 @@
 import { Parser as FormulaParser } from 'hot-formula-parser'
-import PropTypes from 'prop-types'
 import React from 'react'
 import Row from './Row'
 
@@ -66,28 +65,13 @@ const Table = ({ x, y, data }) => {
 
   const rows = []
 
-  console.log(data, 'data')
-
   for (let rowIndex = 0; rowIndex < y + 1; rowIndex += 1) {
     const rowData = data[rowIndex] || {}
 
-    console.log({ y: rowIndex, x: x + 1, rowData })
     rows.push(<Row key={rowIndex} y={rowIndex} x={x + 1} rowData={rowData} />)
   }
 
   return <div style={{ width: 'max-content' }}>{rows}</div>
-}
-
-Table.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  id: PropTypes.string,
-  saveToLocalStorage: PropTypes.bool,
-}
-
-Table.defaultProps = {
-  saveToLocalStorage: true,
-  id: 'default',
 }
 
 export default Table

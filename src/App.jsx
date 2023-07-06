@@ -72,7 +72,6 @@ function App() {
 
     // WebSocket received a message
     socket.onmessage = (event) => {
-      console.log(event.data)
       // console.log('WebSocket message received:', event.data)
       if (event.data.includes('WC')) {
         handleSocketData(JSON.parse(event.data).WC)
@@ -98,7 +97,7 @@ function App() {
       const inputStyle = returnStyles(Properties, 'absolute', 'white')
       return (
         <input
-          style={inputStyle}
+          style={{ ...inputStyle, borderBottom: '1px solid' }}
           defaultValue={Properties.Text}
           onChange={(event) => {
             if (event.target.value !== '') {
@@ -155,7 +154,7 @@ function App() {
               })
             )
           }}
-          style={buttonStyles}
+          style={{ ...buttonStyles, border: '1px', borderRadius: '1px' }}
         >
           {Properties.Caption}
         </button>
