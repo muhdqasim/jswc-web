@@ -163,7 +163,13 @@ function App() {
       const tableStyles = returnStyles(Properties, 'absolute', 'white')
 
       return (
-        <div style={{ ...tableStyles, overflow: 'auto' }}>
+        <div
+          style={{
+            ...tableStyles,
+            overflow: 'auto',
+            border: '1px solid black',
+          }}
+        >
           <Table
             x={parseInt(Properties.Values.length)}
             y={parseInt(Properties.Values.length)}
