@@ -11,6 +11,8 @@ const Row = ({
   x,
   y,
   rowData,
+  gridCellType,
+  excelGrid,
 }) => {
   const cells = []
 
@@ -24,6 +26,8 @@ const Row = ({
         updateCells={updateCells}
         value={rowData[colIndex - 1] || ''}
         executeFormula={executeFormula}
+        gridCellType={gridCellType}
+        excelGrid={excelGrid}
       />
     )
   }

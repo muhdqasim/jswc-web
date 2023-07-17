@@ -1,28 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import Table from './components/Table'
+import { checkCharacterOccurrences, returnStyles } from './utils'
 
 function App() {
   const [jsonData, setJsonData] = useState({})
   const jsonDataRef = useRef({})
   const [socket, setSocket] = useState()
-
-  const returnStyles = (Properties, position, backgroundColor) => {
-    const formStyle = {
-      position,
-      top: `${Properties?.Posn[0]}px`,
-      left: `${Properties?.Posn[1]}px`,
-      maxHeight: Properties?.Size[0],
-      maxWidth: Properties?.Size[1],
-      minHeight: Properties?.Size[0],
-      minWidth: Properties?.Size[1],
-      backgroundColor,
-    }
-
-    return formStyle
-  }
+  const [gridCellType, setGridCellTypes] = useState([])
 
   const handleSocketData = (data) => {
+    if (checkCharacterOccurrences(data.ID, '.')) {
+      setGridCellTypes((prevValue) => {
+        return { ...prevValue, [data.ID]: data.Properties }
+      })
+      return
+    }
     if (data.ID.includes('.')) {
       const prefix = data.ID.split('.')[0]
       const updatedJsonData = { ...jsonDataRef.current[prefix] }
@@ -37,7 +30,7 @@ function App() {
                 ...singleChild,
                 Properties: {
                   ...singleChild.Properties,
-                  Values: data.Properties.Values[0],
+                  Values: data.Properties.Values,
                 },
               }
             }
@@ -58,6 +51,8 @@ function App() {
       }
     }
   }
+
+  console.log({ gridCellType })
 
   useEffect(() => {
     // Create a new WebSocket connection
@@ -159,7 +154,7 @@ function App() {
           {Properties.Caption}
         </button>
       )
-    } else if (Properties.Type === 'Grid') {
+    } else if (Properties.Type === 'Grid' && !Properties.ColTitles) {
       const tableStyles = returnStyles(Properties, 'absolute', 'white')
 
       return (
@@ -175,6 +170,32 @@ function App() {
             y={parseInt(Properties.Values.length)}
             id={singleChild.ID}
             data={[[], ...Properties.Values]}
+          />
+        </div>
+      )
+    } else if (
+      Properties.Type === 'Grid' &&
+      Properties.ColTitles &&
+      Properties.Values
+    ) {
+      console.log({ Properties })
+      const tableStyles = returnStyles(Properties, 'absolute', 'white')
+
+      return (
+        <div
+          style={{
+            ...tableStyles,
+            overflow: 'auto',
+            border: '1px solid black',
+          }}
+        >
+          <Table
+            x={parseInt(Properties.ColTitles.length)}
+            y={parseInt(Properties.Values.length)}
+            id={singleChild.ID}
+            data={[Properties.ColTitles, ...Properties.Values]}
+            gridCellType={gridCellType}
+            excelGrid={false}
           />
         </div>
       )
