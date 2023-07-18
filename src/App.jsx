@@ -52,8 +52,6 @@ function App() {
     }
   }
 
-  console.log({ gridCellType })
-
   useEffect(() => {
     // Create a new WebSocket connection
     const socket = new WebSocket('ws://localhost:22322/')
@@ -178,9 +176,7 @@ function App() {
       Properties.ColTitles &&
       Properties.Values
     ) {
-      console.log({ Properties })
       const tableStyles = returnStyles(Properties, 'absolute', 'white')
-
       return (
         <div
           style={{

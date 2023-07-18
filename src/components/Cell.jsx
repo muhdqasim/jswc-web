@@ -5,6 +5,7 @@ import { generateExcelColumnHeader, limitDecimalPlaces } from '../utils'
  * Cell represents the atomic element of a table
  */
 const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
+  console.log({ x, y, value })
   const calculateCss = () => {
     const css = {
       width: '100px',
@@ -39,7 +40,7 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
   const css = calculateCss()
 
   // column 0
-  if (x === 0) {
+  if (x === 0 && excelGrid) {
     return <span style={css}>{y === 0 ? '' : y}</span>
   }
 

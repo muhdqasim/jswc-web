@@ -17,6 +17,7 @@ const Row = ({
   const cells = []
 
   for (let colIndex = 0; colIndex < x; colIndex += 1) {
+    console.log({ colIndex, rowData: rowData[colIndex] })
     cells.push(
       <Cell
         key={`${colIndex}-${y}`}
@@ -24,7 +25,7 @@ const Row = ({
         x={colIndex}
         onChangedValue={handleChangedCell}
         updateCells={updateCells}
-        value={rowData[colIndex - 1] || ''}
+        value={excelGrid ? rowData[colIndex - 1] || '' : rowData[colIndex]}
         executeFormula={executeFormula}
         gridCellType={gridCellType}
         excelGrid={excelGrid}

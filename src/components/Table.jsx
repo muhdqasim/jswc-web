@@ -1,12 +1,13 @@
 import React from 'react'
 import Row from './Row'
 
-const Table = ({ x, y, data, gridCellType, excelGrid }) => {
-  console.log({ gridCellType })
+const Table = ({ x, y, data, gridCellType, excelGrid = true }) => {
   const rows = []
 
   for (let rowIndex = 0; rowIndex < y + 1; rowIndex += 1) {
     const rowData = data[rowIndex] || {}
+
+    console.log({ rowData })
 
     rows.push(
       <Row
