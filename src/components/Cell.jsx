@@ -1,14 +1,14 @@
 import React from 'react'
 import { generateExcelColumnHeader, limitDecimalPlaces } from '../utils'
+import Input from './Input'
 
 /**
  * Cell represents the atomic element of a table
  */
 const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
-  console.log({ x, y, value })
   const calculateCss = () => {
     const css = {
-      width: '100px',
+      width: '125px',
       padding: '4px',
       margin: '0',
       height: '20px',
@@ -26,7 +26,7 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
     css.borderTop = '0px'
     css.borderLeft = '0px'
 
-    if (x !== 0 && y !== 0) {
+    if (x !== 0 && y !== 0 && excelGrid) {
       css.textAlign = 'right'
     }
 
@@ -38,6 +38,19 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
   }
 
   const css = calculateCss()
+
+  const renderInputComponent = () => {
+    if (y === 0) {
+      return value
+    }
+    console.log({ gridCellType: gridCellType[x] })
+    if (gridCellType[x].Type === 'Edit') {
+      return (
+        <Input Properties={gridCellType[x]} value={value} editable={false} />
+      )
+    }
+    return value
+  }
 
   // column 0
   if (x === 0 && excelGrid) {
@@ -54,7 +67,11 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
 
   return (
     <span style={css} role='presentation'>
-      {value ? limitDecimalPlaces(value) : 0}
+      {!excelGrid
+        ? renderInputComponent()
+        : value
+        ? limitDecimalPlaces(value)
+        : 0}
     </span>
   )
 }

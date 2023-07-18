@@ -7,8 +7,6 @@ const Table = ({ x, y, data, gridCellType, excelGrid = true }) => {
   for (let rowIndex = 0; rowIndex < y + 1; rowIndex += 1) {
     const rowData = data[rowIndex] || {}
 
-    console.log({ rowData })
-
     rows.push(
       <Row
         key={rowIndex}

@@ -36,16 +36,27 @@ export function checkCharacterOccurrences(inputString, character) {
   return count === 2
 }
 
-export function returnStyles(Properties, position, backgroundColor) {
+export function returnStyles(
+  Properties,
+  position,
+  backgroundColor,
+  editable = true
+) {
   const formStyle = {
     position,
-    top: `${Properties?.Posn[0]}px`,
-    left: `${Properties?.Posn[1]}px`,
-    maxHeight: Properties?.Size[0],
-    maxWidth: Properties?.Size[1],
-    minHeight: Properties?.Size[0],
-    minWidth: Properties?.Size[1],
     backgroundColor,
+    maxWidth: Properties?.Size[1],
+    minWidth: Properties?.Size[1],
+  }
+
+  if (editable) {
+    formStyle.maxHeight = Properties?.Size[0]
+    formStyle.minHeight = Properties?.Size[0]
+  }
+
+  if (Properties.Posn) {
+    formStyle.top = `${Properties?.Posn[0]}px`
+    formStyle.left = `${Properties?.Posn[1]}px`
   }
 
   return formStyle

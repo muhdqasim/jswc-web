@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import Input from './components/Input'
 import Table from './components/Table'
 import { checkCharacterOccurrences, returnStyles } from './utils'
 
@@ -12,7 +13,7 @@ function App() {
   const handleSocketData = (data) => {
     if (checkCharacterOccurrences(data.ID, '.')) {
       setGridCellTypes((prevValue) => {
-        return { ...prevValue, [data.ID]: data.Properties }
+        return [...prevValue, data.Properties]
       })
       return
     }
@@ -87,25 +88,12 @@ function App() {
   const renderChildren = (singleChild) => {
     const { Properties } = singleChild
     if (Properties.Type === 'Edit') {
-      const inputStyle = returnStyles(Properties, 'absolute', 'white')
       return (
-        <input
-          style={{ ...inputStyle, borderBottom: '1px solid' }}
-          defaultValue={Properties.Text}
-          onChange={(event) => {
-            if (event.target.value !== '') {
-              socket.send(
-                JSON.stringify({
-                  Event: {
-                    EventName: Properties.Event[0],
-                    ID: singleChild.ID,
-                    Info: parseInt(event.target.value),
-                  },
-                })
-              )
-            }
-          }}
-          type={Properties.FieldType === 'numeric' ? 'number' : 'text'}
+        <Input
+          Properties={Properties}
+          value={Properties.Text}
+          id={singleChild.ID}
+          socket={socket}
         />
       )
     } else if (Properties.Type === 'Combo') {
