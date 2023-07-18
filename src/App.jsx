@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import Dropdown from './components/Dropdown'
 import Input from './components/Input'
 import Table from './components/Table'
 import { checkCharacterOccurrences, returnStyles } from './utils'
@@ -97,30 +98,13 @@ function App() {
         />
       )
     } else if (Properties.Type === 'Combo') {
-      const dropdownStyles = returnStyles(Properties, 'absolute', 'white')
       return (
-        <select
-          defaultValue={Properties.Text}
-          style={dropdownStyles}
-          onChange={(event) => {
-            const index = Properties.Items.indexOf(event.target.value)
-            socket.send(
-              JSON.stringify({
-                Event: {
-                  EventName: Properties.Event[0],
-                  ID: singleChild.ID,
-                  Info: parseInt(index + 1),
-                },
-              })
-            )
-          }}
-        >
-          {Properties.Items.map((item, index) => (
-            <option value={item} key={index}>
-              {item}
-            </option>
-          ))}
-        </select>
+        <Dropdown
+          Properties={Properties}
+          value={Properties.Text}
+          id={singleChild.ID}
+          socket={socket}
+        />
       )
     } else if (Properties.Type === 'Button') {
       const buttonStyles = returnStyles(Properties, 'absolute', 'white')
@@ -180,6 +164,7 @@ function App() {
             data={[Properties.ColTitles, ...Properties.Values]}
             gridCellType={gridCellType}
             excelGrid={false}
+            showInput={Properties.ShowInput === 1}
           />
         </div>
       )

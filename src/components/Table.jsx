@@ -1,7 +1,14 @@
 import React from 'react'
 import Row from './Row'
 
-const Table = ({ x, y, data, gridCellType, excelGrid = true }) => {
+const Table = ({
+  x,
+  y,
+  data,
+  gridCellType,
+  excelGrid = true,
+  showInput = false,
+}) => {
   const rows = []
 
   for (let rowIndex = 0; rowIndex < y + 1; rowIndex += 1) {
@@ -15,6 +22,7 @@ const Table = ({ x, y, data, gridCellType, excelGrid = true }) => {
         rowData={rowData}
         gridCellType={gridCellType}
         excelGrid={excelGrid}
+        showInput={showInput}
       />
     )
   }

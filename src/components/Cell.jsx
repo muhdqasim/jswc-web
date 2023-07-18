@@ -1,17 +1,18 @@
 import React from 'react'
 import { generateExcelColumnHeader, limitDecimalPlaces } from '../utils'
+import Dropdown from './Dropdown'
 import Input from './Input'
 
 /**
  * Cell represents the atomic element of a table
  */
-const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
+const Cell = ({ x, y, value, gridCellType, excelGrid, showInput }) => {
   const calculateCss = () => {
     const css = {
       width: '125px',
       padding: '4px',
       margin: '0',
-      height: '20px',
+      height: '23px',
       boxSizing: 'border-box',
       position: 'relative',
       display: 'inline-block',
@@ -43,11 +44,19 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
     if (y === 0) {
       return value
     }
-    console.log({ gridCellType: gridCellType[x] })
     if (gridCellType[x].Type === 'Edit') {
       return (
         <Input Properties={gridCellType[x]} value={value} editable={false} />
       )
+    } else if (gridCellType[x].Type === 'Combo') {
+      return (
+        <Dropdown Properties={gridCellType[x]} value={value} editable={false} />
+      )
+    } else if (
+      gridCellType[x].Type === 'Button' &&
+      gridCellType[x].Style === 'Check'
+    ) {
+      return <input type='checkbox' checked={value === 1} />
     }
     return value
   }
@@ -67,7 +76,7 @@ const Cell = ({ x, y, value, gridCellType, excelGrid }) => {
 
   return (
     <span style={css} role='presentation'>
-      {!excelGrid
+      {!excelGrid && showInput
         ? renderInputComponent()
         : value
         ? limitDecimalPlaces(value)

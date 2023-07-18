@@ -2,11 +2,10 @@ import React from 'react'
 import { returnStyles } from '../utils'
 
 function Input({ Properties, value, id, socket, editable = true }) {
-  console.log({ value, editable })
   const inputStyle = returnStyles(Properties, 'absolute', 'white', editable)
   return (
     <input
-      style={{ ...inputStyle, borderBottom: '1px solid' }}
+      style={{ ...inputStyle, borderBottom: editable ? '1px solid' : '' }}
       defaultValue={value}
       onChange={(event) => {
         if (event.target.value !== '' && editable) {

@@ -13,6 +13,7 @@ const Row = ({
   rowData,
   gridCellType,
   excelGrid,
+  showInput,
 }) => {
   const cells = []
 
@@ -28,6 +29,7 @@ const Row = ({
         executeFormula={executeFormula}
         gridCellType={gridCellType}
         excelGrid={excelGrid}
+        showInput={showInput}
       />
     )
   }

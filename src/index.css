@@ -11,3 +11,32 @@ th > div,td > div {
 tr {
     height: 20px;
 }
+
+/* styles.css */
+:root {
+    --font-size: 12px;
+    --font-family: 'Arial', sans-serif;
+  }
+  
+  body {
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+    outline: 0 !important;
+  }
+  
+  /* styles.css or your stylesheet file */
+:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+  }
+  
+  /* Remove outline from all inputs on focus */
+  input:focus {
+    outline: 0;
+  }
+
+  select:focus{
+    outline: 0;
+  }
+  
+  /* Add other specific styles for focused inputs if needed */
+  
