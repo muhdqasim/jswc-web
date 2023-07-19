@@ -56,7 +56,7 @@ const Cell = ({ x, y, value, gridCellType, excelGrid, showInput }) => {
       gridCellType[x].Type === 'Button' &&
       gridCellType[x].Style === 'Check'
     ) {
-      return <input type='checkbox' checked={value === 1} />
+      return <input type='checkbox' defaultChecked={value === 1} />
     }
     return value
   }
