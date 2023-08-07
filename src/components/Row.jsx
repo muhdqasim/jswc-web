@@ -14,6 +14,9 @@ const Row = ({
   gridCellType,
   excelGrid,
   showInput,
+  Properties,
+  id,
+  socket,
 }) => {
   const cells = []
 
@@ -30,6 +33,9 @@ const Row = ({
         gridCellType={gridCellType}
         excelGrid={excelGrid}
         showInput={showInput}
+        Properties={Properties}
+        id={id}
+        socket={socket}
       />
     )
   }

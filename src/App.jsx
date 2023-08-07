@@ -3,6 +3,7 @@ import './App.css'
 import Dropdown from './components/Dropdown'
 import Input from './components/Input'
 import Table from './components/Table'
+import TreeView from './components/tree-view'
 import { checkCharacterOccurrences, returnStyles } from './utils'
 
 function App() {
@@ -21,19 +22,34 @@ function App() {
     if (data.ID.includes('.')) {
       const prefix = data.ID.split('.')[0]
       const updatedJsonData = { ...jsonDataRef.current[prefix] }
-      const childrenExist = updatedJsonData.children.find(
-        (singleChild) => singleChild.ID === data.ID
-      )
+
+      const childrenExist = updatedJsonData.children.find((singleChild) => {
+        return singleChild.ID === data.ID
+      })
+
       if (childrenExist) {
         updatedJsonData.children = updatedJsonData.children.map(
           (singleChild) => {
             if (singleChild.ID === data.ID) {
-              return {
-                ...singleChild,
-                Properties: {
-                  ...singleChild.Properties,
-                  Values: data.Properties.Values,
-                },
+              // Check if 'Values' exists in data.Properties
+              if (data.Properties.Values) {
+                return {
+                  ...singleChild,
+                  Properties: {
+                    ...singleChild.Properties,
+                    Values: data.Properties.Values,
+                  },
+                }
+              }
+              // Check if 'Captions' exists in data.Properties
+              else if (data.Properties.Caption) {
+                return {
+                  ...singleChild,
+                  Properties: {
+                    ...singleChild.Properties,
+                    Caption: data.Properties.Caption,
+                  },
+                }
               }
             }
             return singleChild
@@ -42,6 +58,7 @@ function App() {
       } else {
         updatedJsonData.children.push(data)
       }
+
       jsonDataRef.current = {
         ...jsonDataRef.current,
         [prefix]: updatedJsonData,
@@ -67,17 +84,20 @@ function App() {
 
     // WebSocket received a message
     socket.onmessage = (event) => {
-      // console.log('WebSocket message received:', event.data)
       if (event.data.includes('WC')) {
+        console.log('in wc')
         handleSocketData(JSON.parse(event.data).WC)
         console.log(JSON.parse(event.data).WC)
+      } else if (event.data.includes('WG')) {
+        console.log('in wg')
+        handleSocketData(JSON.parse(event.data).WG)
+        console.log(JSON.parse(event.data).WG)
       } else {
+        console.log('in ws')
         handleSocketData(JSON.parse(event.data).WS)
         console.log(JSON.parse(event.data).WS)
       }
       setJsonData(() => jsonDataRef.current)
-      // Handle the received data here
-      // Update your React component state, trigger actions, etc.
     }
 
     // Clean up the WebSocket connection on component unmount
@@ -96,6 +116,39 @@ function App() {
           id={singleChild.ID}
           socket={socket}
         />
+      )
+    } else if (Properties.Type === 'Label') {
+      const labelStyles = returnStyles(Properties, 'absolute', '#F0F0F0')
+      return <label style={{ ...labelStyles }}>{Properties.Caption}</label>
+    } else if (Properties.Type === 'TreeView') {
+      const treeStyle = returnStyles(Properties, 'absolute', 'white')
+      const { Depth, Items } = Properties
+      const treeData = []
+
+      let parentIndex = -1
+      for (let i = 0; i < Depth.length; i++) {
+        const depthValue = Depth[i]
+        const label = Items[i]
+
+        if (depthValue === 0) {
+          parentIndex++
+          treeData.push({
+            id: parentIndex + 1,
+            label,
+            children: [],
+          })
+        } else if (depthValue === 1) {
+          treeData[parentIndex].children.push({
+            id: parentIndex * 10 + treeData[parentIndex].children.length + 1,
+            label,
+          })
+        }
+      }
+
+      return (
+        <div style={{ ...treeStyle, border: '1px solid black' }}>
+          <TreeView data={treeData} />
+        </div>
       )
     } else if (Properties.Type === 'Combo') {
       return (
@@ -162,9 +215,11 @@ function App() {
             y={parseInt(Properties.Values.length)}
             id={singleChild.ID}
             data={[Properties.ColTitles, ...Properties.Values]}
-            gridCellType={gridCellType}
+            gridCellType={gridCellType.slice(2, 6)}
             excelGrid={false}
             showInput={Properties.ShowInput === 1}
+            Properties={Properties}
+            socket={socket}
           />
         </div>
       )
@@ -189,6 +244,7 @@ function App() {
       )
     }
   }
+
   return (
     <>
       {Object.values(jsonData).map((parent) => {

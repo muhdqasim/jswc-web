@@ -1,0 +1,25 @@
+.menu-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+  }
+  
+  .menu-item {
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .dropdown-item {
+    cursor: pointer;
+  }
+  
+  /* Add additional styles as needed */
+  

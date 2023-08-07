@@ -8,6 +8,9 @@ const Table = ({
   gridCellType,
   excelGrid = true,
   showInput = false,
+  Properties,
+  id,
+  socket,
 }) => {
   const rows = []
 
@@ -23,6 +26,9 @@ const Table = ({
         gridCellType={gridCellType}
         excelGrid={excelGrid}
         showInput={showInput}
+        Properties={Properties}
+        id={id}
+        socket={socket}
       />
     )
   }

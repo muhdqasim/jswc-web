@@ -6,7 +6,17 @@ import Input from './Input'
 /**
  * Cell represents the atomic element of a table
  */
-const Cell = ({ x, y, value, gridCellType, excelGrid, showInput }) => {
+const Cell = ({
+  x,
+  y,
+  value,
+  gridCellType,
+  excelGrid,
+  showInput,
+  Properties,
+  socket,
+  id,
+}) => {
   const calculateCss = () => {
     const css = {
       width: '125px',
@@ -45,18 +55,56 @@ const Cell = ({ x, y, value, gridCellType, excelGrid, showInput }) => {
       return value
     }
     if (gridCellType[x].Type === 'Edit') {
+      gridCellType[x]['Event'] = Properties['Event']
       return (
-        <Input Properties={gridCellType[x]} value={value} editable={false} />
+        <Input
+          Properties={gridCellType[x]}
+          value={value}
+          editable={true}
+          socket={socket}
+          id={id}
+          tableInput={true}
+          row={y}
+          col={x + 1}
+        />
       )
     } else if (gridCellType[x].Type === 'Combo') {
+      gridCellType[x]['Event'] = Properties['Event']
       return (
-        <Dropdown Properties={gridCellType[x]} value={value} editable={false} />
+        <Dropdown
+          Properties={gridCellType[x]}
+          value={value}
+          editable={false}
+          tableInput={true}
+          row={y}
+          col={x + 1}
+          id={id}
+          socket={socket}
+        />
       )
     } else if (
       gridCellType[x].Type === 'Button' &&
       gridCellType[x].Style === 'Check'
     ) {
-      return <input type='checkbox' defaultChecked={value === 1} />
+      return (
+        <input
+          type='checkbox'
+          defaultChecked={value === 1}
+          onClick={(event) => {
+            socket.send(
+              JSON.stringify({
+                Event: {
+                  EventName: Properties['Event'][0],
+                  ID: id,
+                  Row: y,
+                  Col: x + 1,
+                  Value: event.target.checked ? 1 : 0,
+                },
+              })
+            )
+          }}
+        />
+      )
     }
     return value
   }

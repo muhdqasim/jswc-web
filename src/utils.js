@@ -61,3 +61,9 @@ export function returnStyles(
 
   return formStyle
 }
+
+export function isNumeric(str) {
+  // Use a regular expression to check if the string contains only numeric characters
+  // The pattern ^\d+$ means the string should start (^) and end ($) with one or more (\d+) digits (\d)
+  return /^\d+$/.test(str)
+}
