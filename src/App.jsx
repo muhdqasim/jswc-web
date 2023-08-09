@@ -3,6 +3,7 @@ import './App.css'
 import Dropdown from './components/Dropdown'
 import Input from './components/Input'
 import Table from './components/Table'
+import MenuBar from './components/menu-bar'
 import TreeView from './components/tree-view'
 import { checkCharacterOccurrences, returnStyles } from './utils'
 
@@ -13,7 +14,12 @@ function App() {
   const [gridCellType, setGridCellTypes] = useState([])
 
   const handleSocketData = (data) => {
-    if (checkCharacterOccurrences(data.ID, '.')) {
+    console.log({ data })
+    if (
+      checkCharacterOccurrences(data.ID, '.') &&
+      data.Properties.Type &&
+      data.Properties.Type !== 'Menu'
+    ) {
       setGridCellTypes((prevValue) => {
         return [...prevValue, data.Properties]
       })
@@ -22,6 +28,42 @@ function App() {
     if (data.ID.includes('.')) {
       const prefix = data.ID.split('.')[0]
       const updatedJsonData = { ...jsonDataRef.current[prefix] }
+
+      if (data.Properties.Type && data.Properties.Type === 'Menu') {
+        const childrenExist = updatedJsonData.children.find((singleChild) => {
+          return singleChild.Properties.Type[0] === 'MenuBar'
+        })
+
+        if (childrenExist) {
+          updatedJsonData.children = updatedJsonData.children.map(
+            (singleChild) => {
+              if (singleChild.Properties.Type[0] === 'MenuBar') {
+                const menuItems = singleChild.Properties.Menu || []
+                menuItems.push(data)
+
+                return {
+                  ...singleChild,
+                  Properties: {
+                    ...singleChild.Properties,
+                    Menu: menuItems,
+                  },
+                }
+              }
+            }
+          )
+        }
+        jsonDataRef.current = {
+          ...jsonDataRef.current,
+          [prefix]: updatedJsonData,
+        }
+        return
+      }
+
+      if (data.Properties.Type && data.Properties.Type === 'MenuItem') {
+        return
+      }
+
+      console.log({ updatedJsonData })
 
       const childrenExist = updatedJsonData.children.find((singleChild) => {
         return singleChild.ID === data.ID
@@ -108,6 +150,20 @@ function App() {
 
   const renderChildren = (singleChild) => {
     const { Properties } = singleChild
+
+    if (Properties.Type[0] === 'MenuBar') {
+      return (
+        <div
+          style={{
+            position: 'absolute',
+            translate: '0% -100%',
+            zIndex: '99999',
+          }}
+        >
+          <MenuBar menuData={Properties.Menu} />
+        </div>
+      )
+    }
     if (Properties.Type === 'Edit') {
       return (
         <Input
@@ -215,7 +271,7 @@ function App() {
             y={parseInt(Properties.Values.length)}
             id={singleChild.ID}
             data={[Properties.ColTitles, ...Properties.Values]}
-            gridCellType={gridCellType.slice(2, 6)}
+            gridCellType={gridCellType}
             excelGrid={false}
             showInput={Properties.ShowInput === 1}
             Properties={Properties}
@@ -233,7 +289,7 @@ function App() {
       return (
         <>
           <form style={formStyles}>
-            <p style={{ position: 'absolute', translate: '0% -200%' }}>
+            <p style={{ position: 'absolute', translate: '0% -300%' }}>
               Function Table
             </p>
             {parent.children.map((singleChild) => {

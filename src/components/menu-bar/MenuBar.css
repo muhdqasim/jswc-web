@@ -1,8 +1,6 @@
 .menu-bar {
     display: flex;
     align-items: center;
-    background-color: #f0f0f0;
-    padding: 10px;
   }
   
   .menu-item {
@@ -12,14 +10,19 @@
   
   .dropdown {
     position: absolute;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: lightgrey;
     padding: 10px;
+    z-index: 99999;
+    border: 1px;
+    border-radius: 10px;
   }
   
   .dropdown-item {
     cursor: pointer;
+
+    &:hover{
+      background-color: darkgrey;
+    }
   }
   
-  /* Add additional styles as needed */
   
