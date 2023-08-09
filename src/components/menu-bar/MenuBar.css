@@ -20,9 +20,9 @@
   .dropdown-item {
     cursor: pointer;
 
-    &:hover{
-      background-color: darkgrey;
-    }
+  }
+  .dropdown-item:hover{
+    background-color: darkgrey;
   }
   
   
