@@ -2,7 +2,7 @@ import React from 'react'
 import Dropdown from './Dropdown'
 import './MenuBar.css'
 
-const MenuBar = ({ menuData }) => {
+const MenuBar = ({ menuData, socket }) => {
   return (
     <div className='menu-bar'>
       {menuData?.map((singleMenu) => {
@@ -10,7 +10,7 @@ const MenuBar = ({ menuData }) => {
           <>
             <div className='menu-item'>
               {singleMenu.Dropdown && singleMenu.Dropdown.length ? (
-                <Dropdown dropdownData={singleMenu} />
+                <Dropdown dropdownData={singleMenu} socket={socket} />
               ) : (
                 singleMenu.Properties.Caption.substring(1)
               )}

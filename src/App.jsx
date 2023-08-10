@@ -119,6 +119,14 @@ function App() {
                     Caption: data.Properties.Caption,
                   },
                 }
+              } else if (data.Properties.FCol) {
+                return {
+                  ...singleChild,
+                  Properties: {
+                    ...singleChild.Properties,
+                    FCol: data.Properties.FCol,
+                  },
+                }
               }
             }
             return singleChild
@@ -139,8 +147,6 @@ function App() {
       }
     }
   }
-
-  console.log({ jsonDataRef })
 
   useEffect(() => {
     // Create a new WebSocket connection
@@ -189,7 +195,7 @@ function App() {
             zIndex: '99999',
           }}
         >
-          <MenuBar menuData={Properties.Menu} />
+          <MenuBar menuData={Properties.Menu} socket={socket} />
         </div>
       )
     }
@@ -203,8 +209,18 @@ function App() {
         />
       )
     } else if (Properties.Type === 'Label') {
+      console.log({ Properties })
       const labelStyles = returnStyles(Properties, 'absolute', '#F0F0F0')
-      return <label style={{ ...labelStyles }}>{Properties.Caption}</label>
+      return (
+        <label
+          style={{
+            ...labelStyles,
+            color: Properties.FCol ? `rgb(${Properties.FCol.join(', ')})` : '',
+          }}
+        >
+          {Properties.Caption}
+        </label>
+      )
     } else if (Properties.Type === 'TreeView') {
       const treeStyle = returnStyles(Properties, 'absolute', 'white')
       const { Depth, Items } = Properties
