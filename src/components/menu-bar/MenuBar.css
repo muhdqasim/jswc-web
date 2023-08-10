@@ -10,19 +10,20 @@
   
   .dropdown {
     position: absolute;
-    background-color: lightgrey;
+    background-color: rgb(240, 240, 240);
     padding: 10px;
     z-index: 99999;
     border: 1px;
-    border-radius: 10px;
+    border-radius: 5px;
   }
   
   .dropdown-item {
     cursor: pointer;
-
+    text-align: start;
+    margin-bottom: 5px;
   }
   .dropdown-item:hover{
-    background-color: darkgrey;
+    background-color: rgb(250, 250, 250); /* Slightly lighter shade */
   }
   
   

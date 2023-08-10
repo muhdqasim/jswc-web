@@ -14,7 +14,6 @@ function App() {
   const [gridCellType, setGridCellTypes] = useState([])
 
   const handleSocketData = (data) => {
-    console.log({ data })
     if (
       checkCharacterOccurrences(data.ID, '.') &&
       data.Properties.Type &&
@@ -60,10 +59,38 @@ function App() {
       }
 
       if (data.Properties.Type && data.Properties.Type === 'MenuItem') {
+        updatedJsonData.children = updatedJsonData.children.map(
+          (singleChild) => {
+            if (singleChild.Properties.Type[0] === 'MenuBar') {
+              return {
+                ...singleChild,
+                Properties: {
+                  ...singleChild.Properties,
+                  Menu: singleChild.Properties.Menu.map((singleMenu) => {
+                    const dataSplitted = data.ID.split('.')[2]
+                    const childSplitted = singleMenu.ID.split('.')[2]
+                    if (dataSplitted === childSplitted) {
+                      return {
+                        ...singleMenu,
+                        Dropdown: [...(singleMenu.Dropdown || []), data],
+                      }
+                    } else {
+                      return singleMenu
+                    }
+                  }),
+                },
+              }
+            } else {
+              return singleChild
+            }
+          }
+        )
+        jsonDataRef.current = {
+          ...jsonDataRef.current,
+          [prefix]: updatedJsonData,
+        }
         return
       }
-
-      console.log({ updatedJsonData })
 
       const childrenExist = updatedJsonData.children.find((singleChild) => {
         return singleChild.ID === data.ID
@@ -112,6 +139,8 @@ function App() {
       }
     }
   }
+
+  console.log({ jsonDataRef })
 
   useEffect(() => {
     // Create a new WebSocket connection
